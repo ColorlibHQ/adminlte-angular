@@ -29,3 +29,24 @@ for (const [from, to] of pairs) {
   writeFileSync(dest, stripped)
   console.log(`[adminlte-angular] copied ${from} -> ${to}`)
 }
+
+// ng-packagr does not auto-copy README/LICENSE into the dist, and the published
+// package is the dist folder (not the repo root). Copy them from the workspace
+// root so the single source of truth stays there and the tarball ships them.
+const docs = [
+  ['README.md', 'dist/adminlte-angular/README.md'],
+  ['LICENSE', 'dist/adminlte-angular/LICENSE'],
+]
+
+for (const [from, to] of docs) {
+  const src = resolve(repoRoot, from)
+  const dest = resolve(repoRoot, to)
+  try {
+    const contents = readFileSync(src, 'utf8')
+    mkdirSync(dirname(dest), { recursive: true })
+    writeFileSync(dest, contents)
+    console.log(`[adminlte-angular] copied ${from} -> ${to}`)
+  } catch {
+    console.warn(`[adminlte-angular] could not read ${from} — skipping`)
+  }
+}

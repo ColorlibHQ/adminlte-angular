@@ -24,6 +24,9 @@
   },
   "license": "MIT",
   "author": "ColorlibHQ",
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": [
     "./css/adminlte.css"
   ],
