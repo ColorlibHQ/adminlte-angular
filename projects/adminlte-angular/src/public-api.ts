@@ -40,6 +40,17 @@ export { BreadcrumbComponent } from './lib/widget/breadcrumb.component';
 export { CommandPaletteComponent } from './lib/widget/command-palette.component';
 export { ApexChartComponent } from './lib/widget/apex-chart.component';
 export { ModalComponent } from './lib/widget/modal.component';
+export { ProgressGroupComponent } from './lib/widget/progress-group.component';
+export { RatingsComponent } from './lib/widget/ratings.component';
+export { DirectChatComponent } from './lib/widget/direct-chat.component';
+export { NavMessagesComponent } from './lib/widget/nav-messages.component';
+export { NavNotificationsComponent } from './lib/widget/nav-notifications.component';
+export { NavTasksComponent } from './lib/widget/nav-tasks.component';
+export { TabsComponent } from './lib/widget/tabs.component';
+export { TabComponent } from './lib/widget/tab.component';
+export { AccordionComponent } from './lib/widget/accordion.component';
+export { AccordionItemComponent } from './lib/widget/accordion-item.component';
+export { DatatableComponent } from './lib/widget/datatable.component';
 
 // Forms
 export { ButtonComponent } from './lib/form/button.component';
@@ -47,3 +58,5 @@ export { InputComponent } from './lib/form/input.component';
 export { TextareaComponent } from './lib/form/textarea.component';
 export { SelectComponent, type SelectOption } from './lib/form/select.component';
 export { InputSwitchComponent } from './lib/form/input-switch.component';
+export { InputFlatpickrComponent } from './lib/form/input-flatpickr.component';
+export { InputTomSelectComponent } from './lib/form/input-tom-select.component';

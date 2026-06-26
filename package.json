@@ -34,7 +34,10 @@
     "@angular/cli": "^22.0.0",
     "@angular/compiler-cli": "^22.0.0",
     "apexcharts": "^5.0.0",
+    "flatpickr": "^4.6.13",
     "ng-packagr": "^22.0.0",
+    "simple-datatables": "^10.2.0",
+    "tom-select": "^2.6.1",
     "typescript": "~6.0.0"
   }
 }

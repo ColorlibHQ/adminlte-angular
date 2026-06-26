@@ -27,6 +27,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/forms.page').then((m) => m.FormsPage),
       },
       {
+        path: 'components',
+        loadComponent: () => import('./pages/components.page').then((m) => m.ComponentsPage),
+      },
+      {
         path: 'tables',
         loadComponent: () => import('./pages/placeholder.page').then((m) => m.PlaceholderPage),
         data: { title: 'Tables' },

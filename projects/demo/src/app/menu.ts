@@ -5,6 +5,7 @@ export const MENU: MenuNode[] = [
   { type: 'header', text: 'MAIN NAVIGATION' },
   { type: 'item', text: 'Dashboard', route: '/', icon: 'bi-speedometer' },
   { type: 'item', text: 'Widgets', route: '/widgets', icon: 'bi-grid-1x2', badge: 'New', badgeColor: 'success' },
+  { type: 'item', text: 'Components', route: '/components', icon: 'bi-puzzle', badge: 'New', badgeColor: 'info' },
   {
     type: 'group',
     text: 'UI Elements',

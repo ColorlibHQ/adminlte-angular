@@ -8,6 +8,17 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
 
 ### Added
 
+- **Stretch-set components for parity with the Vue/React ports:**
+  - Widgets: `LteProgressGroup`, `LteRatings`, `LteDirectChat`, `LteTabs` / `LteTab`,
+    `LteAccordion` / `LteAccordionItem`.
+  - Topbar dropdown menus: `LteNavMessages`, `LteNavNotifications`, `LteNavTasks`.
+  - Plugin wrappers (optional peer deps, lazily imported like `LteApexChart`):
+    `LteInputFlatpickr` (flatpickr), `LteInputTomSelect` (tom-select), and
+    `LteDatatable` (simple-datatables).
+- New `Components` demo page (`/components`) dogfooding the additions, plus the three
+  nav dropdowns wired into the demo topbar.
+- Optional peer dependencies `flatpickr`, `tom-select` and `simple-datatables`
+  (all `optional: true`).
 - Initial Angular 22 port of AdminLTE 4 — a signal-first, standalone-component library
   on Bootstrap 5.3, published as `@adminlte/angular`.
 - **Layout components:** `LteDashboardLayout`, `LteAuthLayout`, `LteAppContent`, `LteTopbar`,

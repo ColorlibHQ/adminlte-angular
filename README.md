@@ -42,8 +42,8 @@ The same AdminLTE 4 dashboard, in the framework you know best — you're looking
 - 🌗 **SSR-safe dark mode** — `data-bs-theme` on `<html>`, persisted to `localStorage` with a system-preference fallback and a no-flash inline script.
 - 🧭 **Config-driven sidebar** — a typed `MenuNode[]` (headers, links, collapsible groups, badges, per-item `visible` flags) with active-link detection and accordion treeviews.
 - ⌘ **Command palette (⌘K)** — fuzzy search over your menu with full keyboard navigation, routing through the Angular Router.
-- 🧩 **30+ components** — layout, widgets and form controls, all with the `Lte` prefix.
-- 📦 **Tree-shakeable** — standalone components, optional peer deps (ApexCharts) lazy-loaded.
+- 🧩 **40+ components** — layout, widgets and form controls, all with the `Lte` prefix.
+- 📦 **Tree-shakeable** — standalone components, optional peer deps (ApexCharts, flatpickr, Tom Select, simple-datatables) lazy-loaded.
 - 🎨 **Bootstrap 5.3** — ships AdminLTE's compiled CSS via `@adminlte/angular/css`.
 
 ## Installation
@@ -146,9 +146,17 @@ Then build a page with the widgets:
 
 **Layout** — `LteDashboardLayout` · `LteAuthLayout` · `LteAppContent` · `LteTopbar` · `LteSidebar` · `LteSidebarBrand` · `LteSidebarNav` · `LteSidebarNavItem` · `LteSidebarOverlay` · `LteFooter` · `LteColorModeToggle` · `LteFullscreenToggle`
 
-**Widgets** — `LteCard` · `LteSmallBox` · `LteInfoBox` · `LteAlert` · `LteCallout` · `LteProgress` · `LteTimeline` · `LteProfileCard` · `LteDescriptionBlock` · `LteBreadcrumb` · `LteCommandPalette` · `LteApexChart` · `LteModal`
+**Widgets** — `LteCard` · `LteSmallBox` · `LteInfoBox` · `LteAlert` · `LteCallout` · `LteProgress` · `LteProgressGroup` · `LteRatings` · `LteTimeline` · `LteProfileCard` · `LteDescriptionBlock` · `LteBreadcrumb` · `LteCommandPalette` · `LteApexChart` · `LteModal` · `LteDirectChat` · `LteTabs` / `LteTab` · `LteAccordion` / `LteAccordionItem` · `LteDatatable`
 
-**Forms** — `LteButton` · `LteInput` · `LteSelect` · `LteTextarea` · `LteInputSwitch` (all `ControlValueAccessor` + `model()` two-way binding)
+**Topbar dropdowns** — `LteNavMessages` · `LteNavNotifications` · `LteNavTasks` (drop into the topbar `[topbar-end]` slot)
+
+**Forms** — `LteButton` · `LteInput` · `LteSelect` · `LteTextarea` · `LteInputSwitch` · `LteInputFlatpickr` · `LteInputTomSelect` (all `ControlValueAccessor` + `model()` two-way binding)
+
+**Optional plugin wrappers** lazy-load their library only when used: `LteApexChart` (apexcharts), `LteInputFlatpickr` (flatpickr), `LteInputTomSelect` (tom-select), `LteDatatable` (simple-datatables). Install the ones you need:
+
+```bash
+npm install apexcharts flatpickr tom-select simple-datatables
+```
 
 > Selectors use the `lte-` prefix (`<lte-card>`); class names use the `Lte…Component` convention.
 
