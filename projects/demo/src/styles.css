@@ -1,0 +1,4 @@
+/* Demo-only overrides. The library ships AdminLTE's CSS via @adminlte/angular/css. */
+.app-content {
+  padding-top: 1rem;
+}

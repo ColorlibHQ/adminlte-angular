@@ -1,0 +1,53 @@
+{
+  "name": "@adminlte/angular",
+  "version": "0.2.0",
+  "description": "Official AdminLTE 4 port for Angular 22 — signal-first standalone components, dark mode, config-driven sidebar, and a ⌘K command palette on Bootstrap 5.3.",
+  "keywords": [
+    "adminlte",
+    "angular",
+    "angular22",
+    "dashboard",
+    "admin-template",
+    "bootstrap",
+    "bootstrap5",
+    "signals",
+    "standalone-components",
+    "dark-mode"
+  ],
+  "homepage": "https://github.com/ColorlibHQ/adminlte-angular",
+  "bugs": {
+    "url": "https://github.com/ColorlibHQ/adminlte-angular/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ColorlibHQ/adminlte-angular.git"
+  },
+  "license": "MIT",
+  "author": "ColorlibHQ",
+  "sideEffects": [
+    "./css/adminlte.css"
+  ],
+  "exports": {
+    "./css": "./css/adminlte.css"
+  },
+  "peerDependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/router": "^22.0.0",
+    "admin-lte": "^4.0.0",
+    "apexcharts": "^4.0.0 || ^5.0.0",
+    "bootstrap": "^5.3.0"
+  },
+  "peerDependenciesMeta": {
+    "apexcharts": {
+      "optional": true
+    },
+    "bootstrap": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.8.0"
+  }
+}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AdminLTE 4 — Angular Port</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Official AdminLTE 4 dashboard, built with Angular 22 standalone components and signals." />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- No-flash color mode: apply the persisted theme before first paint. -->
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem('lte-theme') || 'auto';
+          var d = m === 'dark' || (m === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.setAttribute('data-bs-theme', d ? 'dark' : 'light');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>
