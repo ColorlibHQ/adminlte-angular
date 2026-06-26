@@ -22,6 +22,9 @@ import type { TopbarUser } from '../types/layout';
   selector: 'lte-topbar',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ColorModeToggleComponent, FullscreenToggleComponent],
+  // The host is a grid item of .app-wrapper; make it transparent so the inner
+  // <nav class="app-header"> becomes the real grid item (grid-area: lte-app-header).
+  styles: ':host { display: contents; }',
   template: `
     <nav [class]="navClass()">
       <div class="container-fluid">

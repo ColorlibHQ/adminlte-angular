@@ -15,6 +15,9 @@ import type { SidebarTheme } from '../types/theme';
   selector: 'lte-sidebar',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SidebarBrandComponent, SidebarNavComponent, SidebarOverlayComponent],
+  // Transparent host so the inner <aside class="app-sidebar"> is the real grid
+  // item (grid-area: lte-app-sidebar); the fixed overlay takes no grid track.
+  styles: ':host { display: contents; }',
   template: `
     <aside [class]="asideClass()" [attr.data-bs-theme]="theme()">
       <lte-sidebar-brand [logo]="logo()" [href]="logoHref()" [brandText]="brandText()" />

@@ -81,6 +81,9 @@ import type { CommandItem } from '../types/widgets';
   `,
   styles: [
     `
+      :host {
+        display: contents;
+      }
       .lte-cmd-overlay {
         position: fixed;
         inset: 0;
