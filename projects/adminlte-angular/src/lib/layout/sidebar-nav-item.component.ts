@@ -16,15 +16,26 @@ let uid = 0;
 
 /**
  * Renders a single sidebar node — a header, a leaf link, or a collapsible group
- * (treeview) that recurses into its children. Active-link detection compares the
- * item's route/href to `currentPath`. Groups auto-open when a descendant is
- * active. The submenu slides open via a CSS `grid-template-rows` transition (no
- * fixed heights, no animations package).
+ * (treeview) that recurses into its children.
+ *
+ * The HOST element carries the `.nav-item` / `.nav-header` class so it IS the
+ * direct child of `.sidebar-menu` / `.nav-treeview`. AdminLTE's sidebar CSS
+ * relies on `>` child combinators (e.g. `.sidebar-menu > .nav-item > .nav-link.active`)
+ * which match the real DOM tree — so an extra wrapper would break the active
+ * highlight and the menu link colour (`display: contents` does not help, since
+ * it only affects layout, not selector matching). Active-link detection compares
+ * the item's route/href to `currentPath`; groups auto-open when a descendant is
+ * active.
  */
 @Component({
   selector: 'lte-sidebar-nav-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
+  host: {
+    '[class.nav-header]': "item().type === 'header'",
+    '[class.nav-item]': "item().type !== 'header'",
+    '[class.menu-open]': "item().type === 'group' && isOpen()",
+  },
   styles: [
     `
       .treeview-wrap {
@@ -44,65 +55,61 @@ let uid = 0;
   template: `
     @switch (item().type) {
       @case ('header') {
-        <li class="nav-header">{{ header().text }}</li>
+        {{ header().text }}
       }
       @case ('item') {
-        <li class="nav-item" [class.active]="isItemActive()">
-          @if (leaf().route) {
-            <a [routerLink]="leaf().route" [attr.target]="leaf().target ?? null" class="nav-link" [class.active]="isItemActive()">
-              @if (leaf().icon) {
-                <i class="nav-icon {{ icon(leaf().icon) }}" [class]="leaf().iconColor ? 'text-' + leaf().iconColor : ''"></i>
-              }
-              <p>
-                {{ leaf().text }}
-                @if (leaf().badge != null) {
-                  <span class="nav-badge badge text-bg-{{ leaf().badgeColor || 'secondary' }} ms-auto">{{ leaf().badge }}</span>
-                }
-              </p>
-            </a>
-          } @else {
-            <a [href]="leaf().href ?? '#'" [attr.target]="leaf().target ?? null" class="nav-link" [class.active]="isItemActive()">
-              @if (leaf().icon) {
-                <i class="nav-icon {{ icon(leaf().icon) }}" [class]="leaf().iconColor ? 'text-' + leaf().iconColor : ''"></i>
-              }
-              <p>
-                {{ leaf().text }}
-                @if (leaf().badge != null) {
-                  <span class="nav-badge badge text-bg-{{ leaf().badgeColor || 'secondary' }} ms-auto">{{ leaf().badge }}</span>
-                }
-              </p>
-            </a>
-          }
-        </li>
-      }
-      @default {
-        <li class="nav-item" [class.menu-open]="isOpen()">
-          <button type="button" class="nav-link" [attr.aria-expanded]="isOpen()" (click)="toggle()">
-            @if (group().icon) {
-              <i class="nav-icon {{ icon(group().icon) }}"></i>
+        @if (leaf().route) {
+          <a [routerLink]="leaf().route" [attr.target]="leaf().target ?? null" class="nav-link" [class.active]="isItemActive()">
+            @if (leaf().icon) {
+              <i class="nav-icon {{ icon(leaf().icon) }}" [class]="leaf().iconColor ? 'text-' + leaf().iconColor : ''"></i>
             }
             <p>
-              {{ group().text }}
-              <i class="nav-arrow bi bi-chevron-right"></i>
-              @if (group().badge != null) {
-                <span class="nav-badge badge text-bg-{{ group().badgeColor || 'secondary' }} ms-auto me-3">{{ group().badge }}</span>
+              {{ leaf().text }}
+              @if (leaf().badge != null) {
+                <span class="nav-badge badge text-bg-{{ leaf().badgeColor || 'secondary' }} ms-auto">{{ leaf().badge }}</span>
               }
             </p>
-          </button>
-
-          <div class="treeview-wrap" [class.open]="isOpen()" [style.--lte-treeview-speed.ms]="animationSpeed()">
-            <ul class="nav nav-treeview">
-              @for (child of visibleChildren(); track trackChild($index, child)) {
-                <lte-sidebar-nav-item
-                  [item]="child"
-                  [currentPath]="currentPath()"
-                  [depth]="depth() + 1"
-                  [parentKey]="id"
-                />
+          </a>
+        } @else {
+          <a [href]="leaf().href ?? '#'" [attr.target]="leaf().target ?? null" class="nav-link" [class.active]="isItemActive()">
+            @if (leaf().icon) {
+              <i class="nav-icon {{ icon(leaf().icon) }}" [class]="leaf().iconColor ? 'text-' + leaf().iconColor : ''"></i>
+            }
+            <p>
+              {{ leaf().text }}
+              @if (leaf().badge != null) {
+                <span class="nav-badge badge text-bg-{{ leaf().badgeColor || 'secondary' }} ms-auto">{{ leaf().badge }}</span>
               }
-            </ul>
-          </div>
-        </li>
+            </p>
+          </a>
+        }
+      }
+      @default {
+        <a href="#" class="nav-link" [class.active]="groupActive()" [attr.aria-expanded]="isOpen()" (click)="toggle($event)">
+          @if (group().icon) {
+            <i class="nav-icon {{ icon(group().icon) }}"></i>
+          }
+          <p>
+            {{ group().text }}
+            <i class="nav-arrow bi bi-chevron-right"></i>
+            @if (group().badge != null) {
+              <span class="nav-badge badge text-bg-{{ group().badgeColor || 'secondary' }} ms-auto me-3">{{ group().badge }}</span>
+            }
+          </p>
+        </a>
+
+        <div class="treeview-wrap" [class.open]="isOpen()" [style.--lte-treeview-speed.ms]="animationSpeed()">
+          <ul class="nav nav-treeview">
+            @for (child of visibleChildren(); track trackChild($index, child)) {
+              <lte-sidebar-nav-item
+                [item]="child"
+                [currentPath]="currentPath()"
+                [depth]="depth() + 1"
+                [parentKey]="id"
+              />
+            }
+          </ul>
+        </div>
       }
     }
   `,
@@ -141,7 +148,7 @@ export class SidebarNavItemComponent {
     return target ? this.matches(target) : false;
   });
 
-  private readonly groupActive = computed(
+  readonly groupActive = computed(
     () => this.item().type === 'group' && this.hasActiveDescendant(this.item()),
   );
 
@@ -163,7 +170,8 @@ export class SidebarNavItemComponent {
     return biClass(value);
   }
 
-  toggle(): void {
+  toggle(event?: Event): void {
+    event?.preventDefault();
     if (this.registry.accordion()) {
       this.registry.setOpen(this.parentKey(), this.id, !this.isOpen());
     } else {
