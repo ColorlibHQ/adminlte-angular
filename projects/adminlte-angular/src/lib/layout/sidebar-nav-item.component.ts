@@ -47,6 +47,11 @@ let uid = 0;
         grid-template-rows: 1fr;
       }
       .treeview-wrap > .nav-treeview {
+        /* AdminLTE hides .nav-treeview with display:none and reveals it via
+           '.menu-open > .nav-treeview', but our grid-animation wrapper sits in
+           between and breaks that direct-child rule. Keep it shown and let the
+           grid row height (0fr -> 1fr) drive the slide + hide. */
+        display: block;
         overflow: hidden;
         min-height: 0;
       }
