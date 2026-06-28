@@ -36,6 +36,7 @@ import { MENU } from './menu';
       [menuItems]="menu"
       [user]="user"
       brandText="AdminLTE 4"
+      logo="/AdminLTELogo.png"
       [currentPath]="currentPath()"
       [accordion]="true"
       [fixedHeader]="true"
