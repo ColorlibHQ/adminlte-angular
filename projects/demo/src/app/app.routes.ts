@@ -10,6 +10,10 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./pages/login.page').then((m) => m.LoginPage),
   },
+  { path: 'login-v2', loadComponent: () => import('./pages/login-v2.page').then((m) => m.LoginV2Page) },
+  { path: 'register', loadComponent: () => import('./pages/register.page').then((m) => m.RegisterPage) },
+  { path: 'register-v2', loadComponent: () => import('./pages/register-v2.page').then((m) => m.RegisterV2Page) },
+  { path: 'lockscreen', loadComponent: () => import('./pages/lockscreen.page').then((m) => m.LockscreenPage) },
   {
     path: '',
     component: ShellComponent,
@@ -18,6 +22,12 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./pages/dashboard.page').then((m) => m.DashboardPage),
       },
+      { path: 'dashboard/v2', loadComponent: () => import('./pages/dashboard2.page').then((m) => m.Dashboard2Page) },
+      { path: 'dashboard/v3', loadComponent: () => import('./pages/dashboard3.page').then((m) => m.Dashboard3Page) },
+      // Mailbox
+      { path: 'mailbox/inbox', loadComponent: () => import('./pages/mailbox-inbox.page').then((m) => m.MailboxInboxPage) },
+      { path: 'mailbox/compose', loadComponent: () => import('./pages/mailbox-compose.page').then((m) => m.MailboxComposePage) },
+      { path: 'mailbox/read', loadComponent: () => import('./pages/mailbox-read.page').then((m) => m.MailboxReadPage) },
       // Widgets
       { path: 'widgets/small-box', loadComponent: () => import('./pages/widgets-small-box.page').then((m) => m.WidgetsSmallBoxPage) },
       { path: 'widgets/info-box', loadComponent: () => import('./pages/widgets-info-box.page').then((m) => m.WidgetsInfoBoxPage) },

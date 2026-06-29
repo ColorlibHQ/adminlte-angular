@@ -3,7 +3,16 @@ import type { MenuNode } from '@adminlte/angular';
 /** Config-driven sidebar menu — mirrors the core AdminLTE 4 sidebar structure. */
 export const MENU: MenuNode[] = [
   { type: 'header', text: 'MAIN NAVIGATION' },
-  { type: 'item', text: 'Dashboard', route: '/', icon: 'bi-speedometer' },
+  {
+    type: 'group',
+    text: 'Dashboard',
+    icon: 'bi-speedometer',
+    children: [
+      { type: 'item', text: 'Dashboard v1', route: '/', icon: 'bi-circle' },
+      { type: 'item', text: 'Dashboard v2', route: '/dashboard/v2', icon: 'bi-circle' },
+      { type: 'item', text: 'Dashboard v3', route: '/dashboard/v3', icon: 'bi-circle' },
+    ],
+  },
   {
     type: 'group',
     text: 'Widgets',
@@ -43,6 +52,16 @@ export const MENU: MenuNode[] = [
       { type: 'item', text: 'Data Tables', route: '/tables/data', icon: 'bi-circle' },
     ],
   },
+  {
+    type: 'group',
+    text: 'Mailbox',
+    icon: 'bi-envelope',
+    children: [
+      { type: 'item', text: 'Inbox', route: '/mailbox/inbox', icon: 'bi-circle' },
+      { type: 'item', text: 'Compose', route: '/mailbox/compose', icon: 'bi-circle' },
+      { type: 'item', text: 'Read', route: '/mailbox/read', icon: 'bi-circle' },
+    ],
+  },
   { type: 'item', text: 'Components', route: '/components', icon: 'bi-puzzle', badge: 'New', badgeColor: 'info' },
   { type: 'header', text: 'EXAMPLES' },
   { type: 'item', text: 'Profile', route: '/profile', icon: 'bi-person-badge' },
@@ -63,5 +82,9 @@ export const MENU: MenuNode[] = [
   },
   { type: 'header', text: 'ACCOUNT' },
   { type: 'item', text: 'Login', route: '/login', icon: 'bi-box-arrow-in-right' },
+  { type: 'item', text: 'Login v2', route: '/login-v2', icon: 'bi-box-arrow-in-right' },
+  { type: 'item', text: 'Register', route: '/register', icon: 'bi-person-plus' },
+  { type: 'item', text: 'Register v2', route: '/register-v2', icon: 'bi-person-plus' },
+  { type: 'item', text: 'Lockscreen', route: '/lockscreen', icon: 'bi-lock' },
   { type: 'item', text: 'AdminLTE.io', href: 'https://adminlte.io', icon: 'bi-globe', target: '_blank' },
 ];
