@@ -8,6 +8,8 @@ The official **[AdminLTE 4](https://adminlte.io)** port for **Angular 22** — a
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Signals](https://img.shields.io/badge/signals-first-DD0031.svg)](https://angular.dev/guide/signals)
 
+**🔗 [Live demo](https://adminlte-angular.pages.dev)** · **📚 [Documentation](https://docs.adminlte.io/angular/introduction)**
+
 > Standalone components, signal inputs (`input()`/`output()`/`model()`), the new control flow (`@if`/`@for`/`@switch`), SSR-safe theming, and the modern esbuild application builder.
 
 ## Also available for your stack
