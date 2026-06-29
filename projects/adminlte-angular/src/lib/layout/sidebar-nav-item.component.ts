@@ -66,7 +66,7 @@ let uid = 0;
         @if (leaf().route) {
           <a [routerLink]="leaf().route" [attr.target]="leaf().target ?? null" class="nav-link" [class.active]="isItemActive()">
             @if (leaf().icon) {
-              <i class="nav-icon {{ icon(leaf().icon) }}" [class]="leaf().iconColor ? 'text-' + leaf().iconColor : ''"></i>
+              <i class="nav-icon {{ icon(leaf().icon) }}{{ leaf().iconColor ? ' text-' + leaf().iconColor : '' }}"></i>
             }
             <p>
               {{ leaf().text }}
@@ -78,7 +78,7 @@ let uid = 0;
         } @else {
           <a [href]="leaf().href ?? '#'" [attr.target]="leaf().target ?? null" class="nav-link" [class.active]="isItemActive()">
             @if (leaf().icon) {
-              <i class="nav-icon {{ icon(leaf().icon) }}" [class]="leaf().iconColor ? 'text-' + leaf().iconColor : ''"></i>
+              <i class="nav-icon {{ icon(leaf().icon) }}{{ leaf().iconColor ? ' text-' + leaf().iconColor : '' }}"></i>
             }
             <p>
               {{ leaf().text }}
