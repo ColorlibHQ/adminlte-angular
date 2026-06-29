@@ -18,28 +18,24 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./pages/dashboard.page').then((m) => m.DashboardPage),
       },
-      {
-        path: 'widgets',
-        loadComponent: () => import('./pages/widgets.page').then((m) => m.WidgetsPage),
-      },
-      {
-        path: 'forms',
-        loadComponent: () => import('./pages/forms.page').then((m) => m.FormsPage),
-      },
-      {
-        path: 'components',
-        loadComponent: () => import('./pages/components.page').then((m) => m.ComponentsPage),
-      },
-      {
-        path: 'tables',
-        loadComponent: () => import('./pages/placeholder.page').then((m) => m.PlaceholderPage),
-        data: { title: 'Tables' },
-      },
-      {
-        path: 'nested/:id',
-        loadComponent: () => import('./pages/placeholder.page').then((m) => m.PlaceholderPage),
-        data: { title: 'Nested page' },
-      },
+      // Widgets
+      { path: 'widgets/small-box', loadComponent: () => import('./pages/widgets-small-box.page').then((m) => m.WidgetsSmallBoxPage) },
+      { path: 'widgets/info-box', loadComponent: () => import('./pages/widgets-info-box.page').then((m) => m.WidgetsInfoBoxPage) },
+      { path: 'widgets/cards', loadComponent: () => import('./pages/widgets-cards.page').then((m) => m.WidgetsCardsPage) },
+      // UI Elements
+      { path: 'ui/general', loadComponent: () => import('./pages/ui-general.page').then((m) => m.UiGeneralPage) },
+      { path: 'ui/icons', loadComponent: () => import('./pages/ui-icons.page').then((m) => m.UiIconsPage) },
+      { path: 'ui/timeline', loadComponent: () => import('./pages/ui-timeline.page').then((m) => m.UiTimelinePage) },
+      // Forms
+      { path: 'forms/elements', loadComponent: () => import('./pages/forms-elements.page').then((m) => m.FormsElementsPage) },
+      { path: 'forms/layout', loadComponent: () => import('./pages/forms-layout.page').then((m) => m.FormsLayoutPage) },
+      { path: 'forms/validation', loadComponent: () => import('./pages/forms-validation.page').then((m) => m.FormsValidationPage) },
+      // Tables
+      { path: 'tables/simple', loadComponent: () => import('./pages/tables-simple.page').then((m) => m.TablesSimplePage) },
+      { path: 'tables/data', loadComponent: () => import('./pages/tables-data.page').then((m) => m.TablesDataPage) },
+      // Components showcase
+      { path: 'components', loadComponent: () => import('./pages/components.page').then((m) => m.ComponentsPage) },
+      // Example pages
       { path: 'profile', loadComponent: () => import('./pages/profile.page').then((m) => m.ProfilePage) },
       { path: 'settings', loadComponent: () => import('./pages/settings.page').then((m) => m.SettingsPage) },
       { path: 'pricing', loadComponent: () => import('./pages/pricing.page').then((m) => m.PricingPage) },
