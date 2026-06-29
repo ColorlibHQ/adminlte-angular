@@ -33,6 +33,11 @@ The same AdminLTE 4 dashboard, in the framework you know best — you're looking
 </div>
 <!-- ADMINLTE-ECOSYSTEM:END -->
 
+<p align="center">
+  <a href="https://adminlte-angular.pages.dev"><img src=".github/preview.png" alt="AdminLTE 4 for Angular — dashboard preview" width="100%"></a>
+</p>
+
+
 ## Features
 
 - 🅰️ **Angular 22, signal-first** — standalone components, `input()`/`output()`/`model()`, the new control flow, zoneless-friendly.
