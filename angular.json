@@ -59,6 +59,7 @@
               "node_modules/simple-datatables/dist/style.css",
               "node_modules/flatpickr/dist/flatpickr.min.css",
               "node_modules/jsvectormap/dist/jsvectormap.min.css",
+              "node_modules/quill/dist/quill.snow.css",
               "projects/demo/src/styles.css"
             ],
             "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
