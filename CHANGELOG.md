@@ -6,6 +6,13 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-19
+
+### Changed
+- Bundled AdminLTE core moved to **4.8.3**, which carries the fix for every page
+  scrolling sideways at phone widths. The port's own header fix stays — both set
+  the same custom property, so they do not compound.
+
 ### Added
 
 - **Stretch-set components for parity with the Vue/React ports:**
