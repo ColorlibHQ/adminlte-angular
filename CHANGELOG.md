@@ -49,3 +49,32 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
   focus-ring fix. The library imports no AdminLTE JavaScript, so the modules bundled
   upstream since 4.1 (`ColorMode`, `SidebarSearch`) never collide with the Angular
   services.
+- **Dependencies refreshed.** Angular **22.0.x → 22.1.x** (`@angular/common`, `compiler`,
+  `compiler-cli`, `core`, `forms`, `platform-browser`, `router` → 22.1.2; `@angular/build`
+  and `@angular/cli` → 22.1.4) via `ng update`, plus `ng-packagr` 22.0.0 → 22.1.1,
+  `zone.js` `~0.15.0` → `~0.16.0` (the version Angular 22's own CLI scaffolds, and inside
+  `@angular/core`'s `~0.15.0 || ~0.16.0` peer range), `simple-datatables` 10.2.0 → 10.3.0
+  and `tom-select` 2.6.1 → 2.6.2. The refreshed build chain also clears most of the
+  workspace's transitive advisories (`npm audit`: 15 → 4, including the only critical).
+- **ApexCharts 5 → 6 (major).** The `apexcharts` peer dependency now reads
+  `^4.0.0 || ^5.0.0 || ^6.0.0`, and the demo builds against 6.10.0. `LteApexChart` needed
+  no changes — v6 keeps the `new ApexCharts(el, options)` / `render()` / `updateOptions()` /
+  `destroy()` API and existing option objects unchanged; its two new defaults
+  (variable-length data transitions, pinch-zoom/pan gestures) are opt-out via
+  `chart.animations.dynamicAnimation` and `chart.zoom.pinch` / `chart.pan.inertia`.
+  Consumers staying on ApexCharts 4 or 5 are unaffected. Note that v6's full bundle is
+  larger (the demo's lazily-loaded `apexcharts` chunk grows from ~135 kB to ~223 kB
+  transfer); v6 also ships per-chart-type entry points (`apexcharts/area`, `apexcharts/bar`,
+  …) for consumers who want to trim that.
+- The `bootstrap` peer dependency is now `^5.3.8` (was `^5.3.0`), matching what
+  `admin-lte@4.8.1` itself requires — the advertised range no longer resolves to a
+  Bootstrap older than the CSS it is paired with.
+- **Held back — FullCalendar 7.** Only `@fullcalendar/core` has a stable 7.x (7.0.2).
+  The plugins the demo calendar needs (`daygrid`, `timegrid`, `list`, `interaction`) are on
+  `latest: 6.1.21`, with 7.x available only as `7.0.0-rc.0` / `7.0.0-beta.6` pre-releases,
+  and the v6 plugins pin `@fullcalendar/core@~6.1.21`, so upgrading core alone fails
+  `npm install` with `ERESOLVE`. FullCalendar 7's core also adds two new required peers
+  (`temporal-polyfill`, `@full-ui/headless-calendar`). All `@fullcalendar/*` packages
+  therefore stay on 6.1.21 until the plugin set ships stable 7.x builds.
+- **Held back — TypeScript 7.** `@angular/compiler-cli@22.1.2` and `@angular/build@22.1.4`
+  both declare `typescript: >=6.0 <6.1`, so the workspace stays on `~6.0.0`.
