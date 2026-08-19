@@ -78,3 +78,43 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
   therefore stay on 6.1.21 until the plugin set ships stable 7.x builds.
 - **Held back — TypeScript 7.** `@angular/compiler-cli@22.1.2` and `@angular/build@22.1.4`
   both declare `typescript: >=6.0 <6.1`, so the workspace stays on `~6.0.0`.
+
+### Fixed
+
+- **`LteAuthLayout` rendered an empty card for `variant="v2"` (breaking).** The template
+  declared the default `<ng-content />` twice — once per `@if` branch — and Angular
+  distributes projected nodes into a single slot when the component is created, so the
+  copy in the losing branch never received anything. Every `variant="v2"` page therefore
+  shipped `<div class="card-body login-card-body"></div>` with no children: the demo's
+  `/login`, `/login-v2` and `/register-v2` showed a blank card, and the `[logo]` slot had
+  the same defect. Both slots are now declared exactly once — the default slot in the
+  `.card-body` both variants share, and `[logo]` in an `<ng-template>` that each variant
+  stamps with `ngTemplateOutlet` — so `default` and `v2` project identically. The rendered
+  markup is unchanged for consumers (`.login-box > .card.card-outline.card-primary >
+  .card-header + .card-body` for v2, brand above a plain `.card` otherwise). Anyone
+  extending the component: a projection slot may only be declared once per template.
+- **Sidebar: collapsed submenus stayed keyboard-focusable (a11y).** A closed
+  `.nav-treeview` collapses to `height: 0` inside the grid animation wrapper, but stayed
+  `visibility: visible` with no `inert`, so its links kept their place in the tab order —
+  19 invisible links on the demo's default route, reachable with Tab and focusable via
+  script. The wrapper now carries `inert` while closed (removing the subtree from both the
+  tab order and the accessibility tree), backed by a `visibility: hidden` that is delayed
+  until the collapse transition ends, so the slide-open/slide-shut animation is unchanged.
+  The group toggle also gained `aria-controls` pointing at the submenu's new `id`.
+- **Header overflowed the viewport on phones.** With the standard toggle row (search,
+  messages, notifications, tasks, fullscreen, colour mode, user menu), Bootstrap's 1rem
+  navbar link padding made the header 413 px wide inside a 390 px viewport, so every page
+  scrolled sideways (`scrollWidth` 413 vs `clientWidth` 390). `LteTopbar` now halves
+  `--bs-navbar-nav-link-padding-x` below the `sm` breakpoint; the property is declared on
+  `<nav class="app-header">`, so it also applies to items projected through
+  `[topbar-start]` / `[topbar-end]`. Measured 390/390 at 390 px and 320/320 at 320 px;
+  layout at `sm` and above is untouched.
+- **Demo: a MIME-type console error on every two-segment route.** The demo build now sets
+  `baseHref` / `deployUrl` to `/`, so `index.html` emits absolute asset URLs (`/main-*.js`,
+  `/chunk-*.js`, `/styles-*.css`). The relative `<link rel="modulepreload"
+  href="chunk-*.js">` was resolved against the current location rather
+  than `<base href="/">` by the browser's speculative preloader, so on a two-segment route
+  such as `/dashboard/v2` it fetched `/dashboard/chunk-*.js`; Cloudflare Pages' SPA
+  fallback answered with `index.html` and Chrome logged *"Failed to load module script:
+  Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of
+  text/html"* on ~16 routes. Absolute URLs resolve identically from any depth.

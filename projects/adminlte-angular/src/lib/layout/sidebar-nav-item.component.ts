@@ -25,7 +25,8 @@ let uid = 0;
  * highlight and the menu link colour (`display: contents` does not help, since
  * it only affects layout, not selector matching). Active-link detection compares
  * the item's route/href to `currentPath`; groups auto-open when a descendant is
- * active.
+ * active. A collapsed group's wrapper carries `inert`, so its links leave both
+ * the tab order and the accessibility tree while the submenu is closed.
  */
 @Component({
   selector: 'lte-sidebar-nav-item',
@@ -54,6 +55,18 @@ let uid = 0;
         display: block;
         overflow: hidden;
         min-height: 0;
+        /* A zero-height submenu is invisible but still rendered, so its links
+           stayed keyboard-reachable. Visibility is delayed until the collapse
+           animation has finished (and applied instantly on open), which keeps
+           the slide intact while taking the links out of the tab order. The
+           inert attribute on the wrapper does the same immediately for the
+           a11y tree; this rule is the belt-and-braces half. */
+        visibility: hidden;
+        transition: visibility 0s linear var(--lte-treeview-speed, 300ms);
+      }
+      .treeview-wrap.open > .nav-treeview {
+        visibility: visible;
+        transition-delay: 0s;
       }
     `,
   ],
@@ -90,7 +103,14 @@ let uid = 0;
         }
       }
       @default {
-        <a href="#" class="nav-link" [class.active]="groupActive()" [attr.aria-expanded]="isOpen()" (click)="toggle($event)">
+        <a
+          href="#"
+          class="nav-link"
+          [class.active]="groupActive()"
+          [attr.aria-expanded]="isOpen()"
+          [attr.aria-controls]="id + '-submenu'"
+          (click)="toggle($event)"
+        >
           @if (group().icon) {
             <i class="nav-icon {{ icon(group().icon) }}"></i>
           }
@@ -103,8 +123,13 @@ let uid = 0;
           </p>
         </a>
 
-        <div class="treeview-wrap" [class.open]="isOpen()" [style.--lte-treeview-speed.ms]="animationSpeed()">
-          <ul class="nav nav-treeview">
+        <div
+          class="treeview-wrap"
+          [class.open]="isOpen()"
+          [style.--lte-treeview-speed.ms]="animationSpeed()"
+          [attr.inert]="isOpen() ? null : ''"
+        >
+          <ul class="nav nav-treeview" [id]="id + '-submenu'">
             @for (child of visibleChildren(); track trackChild($index, child)) {
               <lte-sidebar-nav-item
                 [item]="child"

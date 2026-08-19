@@ -24,7 +24,21 @@ import type { TopbarUser } from '../types/layout';
   imports: [ColorModeToggleComponent, FullscreenToggleComponent],
   // The host is a grid item of .app-wrapper; make it transparent so the inner
   // <nav class="app-header"> becomes the real grid item (grid-area: lte-app-header).
-  styles: ':host { display: contents; }',
+  styles: `
+    :host { display: contents; }
+
+    /* Phones: Bootstrap's navbar links are padded 1rem a side, which makes a
+       full toggle row (search, messages, notifications, tasks, fullscreen,
+       colour mode, user menu) 413px wide inside a 390px viewport — the page
+       then scrolls sideways. Halving the padding below 'sm' keeps every item
+       on screen (296px at 390px wide, still fitting a 320px viewport). The
+       custom property is declared on <nav class="app-header"> so it inherits
+       into items projected through [topbar-start] / [topbar-end] too, which a
+       scoped descendant selector could not reach. */
+    @media (max-width: 575.98px) {
+      .app-header { --bs-navbar-nav-link-padding-x: 0.5rem; }
+    }
+  `,
   template: `
     <nav [class]="navClass()">
       <div class="container-fluid">

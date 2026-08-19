@@ -45,6 +45,8 @@
             "outputPath": "dist/demo",
             "index": "projects/demo/src/index.html",
             "browser": "projects/demo/src/main.ts",
+            "baseHref": "/",
+            "deployUrl": "/",
             "polyfills": ["zone.js"],
             "tsConfig": "projects/demo/tsconfig.app.json",
             "assets": [
