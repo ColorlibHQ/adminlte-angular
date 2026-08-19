@@ -36,3 +36,16 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
 - `@adminlte/angular/css` export — AdminLTE's compiled CSS copied into `dist` at build time.
 - Demo application (`projects/demo`) dogfooding the library: dashboard, widgets, forms and
   login pages with a theme-aware ApexCharts chart.
+
+### Changed
+
+- Target **AdminLTE 4.8.1** (was 4.0.0) — the `admin-lte` peer dependency is now `^4.8.1`,
+  so `@adminlte/angular/css` re-exports AdminLTE 4.8.1's compiled stylesheet. Upstream
+  additions now available to consumers: the opt-in extended palette
+  (`admin-lte/dist/css/adminlte-colors.css`) and the AdminLTE 3 palette
+  (`adminlte-colors-v3.css`), `data-lte-primary="…"` on `<html>` to promote a palette
+  colour to Bootstrap's `primary`, `data-lte-print="plain"` for document printing,
+  `data-lte-contrast="aa"` for WCAG AA text on the v3 palette, and a pagination
+  focus-ring fix. The library imports no AdminLTE JavaScript, so the modules bundled
+  upstream since 4.1 (`ColorMode`, `SidebarSearch`) never collide with the Angular
+  services.

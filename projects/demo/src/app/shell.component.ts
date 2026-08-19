@@ -50,7 +50,7 @@ import { MENU } from './menu';
       </ng-container>
       <router-outlet />
       <span footer>
-        <b>Version</b> 4.0.0 &mdash; the Angular 22 port.
+        <b>Version</b> 4.8.1 &mdash; the Angular 22 port.
       </span>
     </lte-dashboard-layout>
   `,

@@ -118,7 +118,7 @@ const MENU: MenuNode[] = [
   template: `
     <lte-dashboard-layout [menuItems]="menu" [currentPath]="currentPath()" [accordion]="true">
       <router-outlet />
-      <span footer><b>Version</b> 4.0.0</span>
+      <span footer><b>Version</b> 4.8.1</span>
     </lte-dashboard-layout>
   `,
 })
