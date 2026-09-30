@@ -6,6 +6,64 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
 
 ## [Unreleased]
 
+Charts move from ApexCharts to **Chart.js 4.5 (MIT)**. From 5.2.0 ApexCharts ships under the
+proprietary "ApexCharts License", which does not suit an MIT library that other people build
+products on, so the wrapper is replaced rather than kept alongside.
+
+### Removed (breaking)
+
+- **`LteApexChart` (`ApexChartComponent`, `<lte-apex-chart>`)** and the optional `apexcharts`
+  peer dependency.
+
+### Added
+
+- **`LteChart` (`ChartComponent`, `<lte-chart>`)** — a signal-driven Chart.js wrapper with
+  `type`, `data`, `options`, `plugins`, `height`, `width` and `label` (canvas `aria-label`)
+  inputs, plus a `chart` getter for the live instance. It lazily imports `chart.js` (new
+  optional peer dependency `^4.5.0`) in the browser only, updates in place when inputs change,
+  re-creates only when `type`/`plugins` change, resizes with its container and destroys the
+  chart on teardown.
+- **`ChartThemeService`** — resolves Bootstrap/AdminLTE's `--bs-*` variables (theme colours,
+  body/muted text, borders, card background, body font) into a `palette` signal and re-reads
+  it when `<html>` changes `data-bs-theme`, `dir` or `data-lte-primary`, so charts re-theme
+  live on a colour-mode switch. SSR-safe.
+- **AdminLTE Chart.js preset** applied to `Chart.defaults` by the first `<lte-chart>`: Bootstrap
+  font, muted ticks, subtle horizontal-only gridlines, smooth 2px lines, rounded bars,
+  card-coloured slice separators, circular legend markers and a Bootstrap-style tooltip; RTL
+  documents get right-to-left legends and tooltips. Exported helpers: `applyChartDefaults`,
+  `verticalGradient` (area gradient fill), `withAlpha`, and the `ChartPalette` /
+  `ChartThemeColor` types.
+
+### Migration from 0.3.x
+
+1. `npm uninstall apexcharts && npm install chart.js`
+2. Import `ChartComponent` instead of `ApexChartComponent`.
+3. Rewrite each ApexCharts options object as Chart.js config:
+   - `<lte-apex-chart [options]="o" />` → `<lte-chart type="line" [data]="data" [options]="options" [height]="300" />`
+   - `chart.type: 'area'` → `type="line"` with dataset `fill: 'origin'` (optionally
+     `backgroundColor: verticalGradient(color)`); `stroke.curve: 'smooth'` is the default.
+   - `chart.type: 'bar'` → `type="bar"`; `plotOptions.bar.horizontal` → `options.indexAxis: 'y'`;
+     `stacked` → `scales.x.stacked` / `scales.y.stacked`.
+   - `donut`/`pie` → `type="doughnut"`/`"pie"` with `data.labels` + `datasets[0].data`.
+   - `chart.height` → the `[height]` input; `sparkline.enabled` → hide both scales, the legend
+     and the tooltip.
+   - Hard-coded `colors` → `ChartThemeService.palette().colors.*` so charts follow dark mode.
+   - The ApexCharts toolbar (download/zoom) has no equivalent; add `chartjs-plugin-zoom` (MIT)
+     if you need zoom.
+4. `Chart.defaults` is global: if your app also draws charts with Chart.js directly, they pick
+   up the AdminLTE preset once an `<lte-chart>` has rendered.
+
+### Demo
+
+- Dashboard v1 (sales area chart + three sparklines), v2 (sales area chart, browser-usage donut,
+  seven table sparklines) and v3 (visitors line chart with striped rows, grouped sales bars) are
+  rebuilt on `<lte-chart>` with the same data and colours. The charts now follow dark mode —
+  under ApexCharts the v3 charts kept light-mode grid stripes and labels after a switch.
+- The v2 order-table sparklines were rebuilt on every change-detection pass (the template
+  called a method that returned a new options object); they are now a computed signal.
+- The demo's lazily loaded chart chunk drops from ~949 kB / ~223 kB transfer (ApexCharts 6.10)
+  to ~205 kB / ~61 kB (Chart.js 4.5.1).
+
 ## [0.3.0] - 2026-08-19
 
 ### Changed

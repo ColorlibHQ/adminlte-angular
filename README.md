@@ -45,7 +45,8 @@ The same AdminLTE 4 dashboard, in the framework you know best — you're looking
 - 🧭 **Config-driven sidebar** — a typed `MenuNode[]` (headers, links, collapsible groups, badges, per-item `visible` flags) with active-link detection and accordion treeviews.
 - ⌘ **Command palette (⌘K)** — fuzzy search over your menu with full keyboard navigation, routing through the Angular Router.
 - 🧩 **40+ components** — layout, widgets and form controls, all with the `Lte` prefix.
-- 📦 **Tree-shakeable** — standalone components, optional peer deps (ApexCharts, flatpickr, Tom Select, simple-datatables) lazy-loaded.
+- 📦 **Tree-shakeable** — standalone components, optional peer deps (Chart.js, flatpickr, Tom Select, simple-datatables) lazy-loaded.
+- 📊 **Chart.js charts** — `<lte-chart>` wraps [Chart.js](https://www.chartjs.org/) (MIT) with an AdminLTE theme preset that follows dark mode live.
 - 🎨 **Bootstrap 5.3** — ships AdminLTE's compiled CSS via `@adminlte/angular/css`.
 
 ## Installation
@@ -53,7 +54,7 @@ The same AdminLTE 4 dashboard, in the framework you know best — you're looking
 ```bash
 npm install @adminlte/angular admin-lte bootstrap bootstrap-icons
 # optional, for charts:
-npm install apexcharts
+npm install chart.js
 ```
 
 `@adminlte/angular` lists `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/router`, `bootstrap` and `admin-lte` as peer dependencies.
@@ -139,7 +140,7 @@ Then build a page with the widgets:
   </div>
 
   <lte-card title="Sales" icon="bi-bar-chart" [collapsible]="true" [maximizable]="true">
-    <lte-apex-chart [options]="chartOptions()" />
+    <lte-chart type="line" [data]="salesData()" [options]="salesOptions" [height]="300" />
   </lte-card>
 </lte-app-content>
 ```
@@ -148,19 +149,84 @@ Then build a page with the widgets:
 
 **Layout** — `LteDashboardLayout` · `LteAuthLayout` · `LteAppContent` · `LteTopbar` · `LteSidebar` · `LteSidebarBrand` · `LteSidebarNav` · `LteSidebarNavItem` · `LteSidebarOverlay` · `LteFooter` · `LteColorModeToggle` · `LteFullscreenToggle`
 
-**Widgets** — `LteCard` · `LteSmallBox` · `LteInfoBox` · `LteAlert` · `LteCallout` · `LteProgress` · `LteProgressGroup` · `LteRatings` · `LteTimeline` · `LteProfileCard` · `LteDescriptionBlock` · `LteBreadcrumb` · `LteCommandPalette` · `LteApexChart` · `LteModal` · `LteDirectChat` · `LteTabs` / `LteTab` · `LteAccordion` / `LteAccordionItem` · `LteDatatable`
+**Widgets** — `LteCard` · `LteSmallBox` · `LteInfoBox` · `LteAlert` · `LteCallout` · `LteProgress` · `LteProgressGroup` · `LteRatings` · `LteTimeline` · `LteProfileCard` · `LteDescriptionBlock` · `LteBreadcrumb` · `LteCommandPalette` · `LteChart` · `LteModal` · `LteDirectChat` · `LteTabs` / `LteTab` · `LteAccordion` / `LteAccordionItem` · `LteDatatable`
 
 **Topbar dropdowns** — `LteNavMessages` · `LteNavNotifications` · `LteNavTasks` (drop into the topbar `[topbar-end]` slot)
 
 **Forms** — `LteButton` · `LteInput` · `LteSelect` · `LteTextarea` · `LteInputSwitch` · `LteInputFlatpickr` · `LteInputTomSelect` (all `ControlValueAccessor` + `model()` two-way binding)
 
-**Optional plugin wrappers** lazy-load their library only when used: `LteApexChart` (apexcharts), `LteInputFlatpickr` (flatpickr), `LteInputTomSelect` (tom-select), `LteDatatable` (simple-datatables). Install the ones you need:
+**Optional plugin wrappers** lazy-load their library only when used: `LteChart` (chart.js), `LteInputFlatpickr` (flatpickr), `LteInputTomSelect` (tom-select), `LteDatatable` (simple-datatables). Install the ones you need:
 
 ```bash
-npm install apexcharts flatpickr tom-select simple-datatables
+npm install chart.js flatpickr tom-select simple-datatables
 ```
 
 > Selectors use the `lte-` prefix (`<lte-card>`); class names use the `Lte…Component` convention.
+
+## Charts
+
+Charts are [Chart.js](https://www.chartjs.org/) 4.5 (MIT). `<lte-chart>` takes the standard
+Chart.js `type`, `data` and `options`, loads `chart.js` lazily in the browser only (SSR-safe),
+updates in place when its inputs change, resizes with its container and destroys the chart
+when the component is destroyed.
+
+```ts
+import { Component, computed, inject } from '@angular/core';
+import type { ChartData, ChartOptions } from 'chart.js';
+import { ChartComponent, ChartThemeService, verticalGradient } from '@adminlte/angular';
+
+@Component({
+  selector: 'app-sales',
+  imports: [ChartComponent],
+  template: `<lte-chart type="line" [data]="data()" [options]="options" [height]="300" />`,
+})
+export class SalesComponent {
+  private readonly theme = inject(ChartThemeService);
+
+  // Build colours from the palette so they follow light/dark mode.
+  readonly data = computed<ChartData<'line'>>(() => {
+    const { colors } = this.theme.palette();
+    return {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [
+        {
+          label: 'Digital Goods',
+          data: [28, 48, 40, 19, 86, 27, 90],
+          borderColor: colors.primary,
+          backgroundColor: verticalGradient(colors.primary),
+          fill: 'origin',
+        },
+      ],
+    };
+  });
+
+  readonly options: ChartOptions<'line'> = { plugins: { legend: { display: false } } };
+}
+```
+
+The first `<lte-chart>` applies the AdminLTE preset to Chart.js' global `Chart.defaults`
+(Bootstrap font, `--bs-*` colours, subtle gridlines, rounded bars, Bootstrap-style tooltip and
+legend). `ChartThemeService` re-reads the CSS variables whenever `<html>` changes
+`data-bs-theme`, `dir` or `data-lte-primary`, and every chart re-themes live. RTL documents get
+right-to-left legends and tooltips.
+
+### Migrating from `LteApexChart` (0.3.x → 0.4.0)
+
+0.4.0 replaces the previous chart wrapper (`LteApexChart` / `ApexChartComponent`), whose chart
+library is no longer MIT-licensed, with `LteChart` on Chart.js. Remove the old chart package,
+run `npm install chart.js`, import `ChartComponent` instead of `ApexChartComponent`, and rewrite
+each options object as Chart.js `type` / `data` / `options` (details in the
+[CHANGELOG](CHANGELOG.md)):
+
+| Before | After |
+|---|---|
+| `<lte-apex-chart [options]="opts" />` | `<lte-chart type="line" [data]="data" [options]="options" [height]="300" />` |
+| `chart: { type: 'area' }`, `stroke: { curve: 'smooth' }` | `type="line"`, dataset `fill: 'origin'` (lines are smooth by default) |
+| `chart: { type: 'bar' }`, `plotOptions.bar.horizontal` | `type="bar"`, `options.indexAxis: 'y'` |
+| `chart: { type: 'donut' }`, `series` + `labels` | `type="doughnut"`, `data.labels` + `datasets[0].data` |
+| `chart: { height: 300 }` | `[height]="300"` on `<lte-chart>` |
+| `sparkline: { enabled: true }` | hide `scales.x`/`scales.y`, legend and tooltip |
+| `colors: ['#0d6efd']` | `ChartThemeService.palette().colors.primary` |
 
 ## Services
 
@@ -173,6 +239,7 @@ State is exposed through `providedIn: 'root'` signal services:
 | `CommandPaletteService` | ⌘K open/close + global key listener |
 | `FullscreenService` | Fullscreen API wrapper, `fullscreenchange`-driven |
 | `TreeviewService` | sidebar accordion/expand registry (provided per sidebar) |
+| `ChartThemeService` | Chart.js palette from the `--bs-*` variables, re-read on colour-mode/direction change |
 
 ## Development
 

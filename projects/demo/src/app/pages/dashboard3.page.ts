@@ -1,16 +1,46 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AppContentComponent, ApexChartComponent } from '@adminlte/angular';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import type { ChartData, ChartOptions, ChartType, Plugin } from 'chart.js';
+import { AppContentComponent, ChartComponent, ChartThemeService } from '@adminlte/angular';
+
+declare module 'chart.js' {
+  interface PluginOptionsByType<TType extends ChartType> {
+    stripedRows?: { color?: string };
+  }
+}
+
+/**
+ * Fills every other horizontal band between y-axis ticks — the striped grid rows of the
+ * core page's visitors chart (`grid.row.colors`), drawn in the theme's tertiary background.
+ */
+const stripedRows: Plugin<'line'> = {
+  id: 'stripedRows',
+  beforeDraw(chart, _args, opts: { color?: string }) {
+    const y = chart.scales['y'];
+    if (!y || !opts?.color) return;
+    const { left, right } = chart.chartArea;
+    const { ctx } = chart;
+    ctx.save();
+    ctx.fillStyle = opts.color;
+    const ticks = y.ticks;
+    for (let i = ticks.length - 1; i > 0; i -= 2) {
+      const top = y.getPixelForValue(ticks[i].value);
+      const bottom = y.getPixelForValue(ticks[i - 1].value);
+      ctx.fillRect(left, top, right - left, bottom - top);
+    }
+    ctx.restore();
+  },
+};
 
 /**
  * Dashboard v3 — 1:1 replica of the core AdminLTE 4 `index3.html`: an Online
  * Store Visitors line chart, a Products table, a Sales bar chart, and an Online
- * Store Overview metrics card. Charts use `<lte-apex-chart>` with the exact
- * ApexCharts option objects from the core page's `<script>` block.
+ * Store Overview metrics card. Charts use `<lte-chart>` (Chart.js) with the data,
+ * colours and chart types of the core page's `<script>` block.
  */
 @Component({
   selector: 'app-dashboard3',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AppContentComponent, ApexChartComponent],
+  imports: [AppContentComponent, ChartComponent],
   template: `
     <lte-app-content
       title="Dashboard v3"
@@ -38,7 +68,7 @@ import { AppContentComponent, ApexChartComponent } from '@adminlte/angular';
                 </p>
               </div>
               <div class="position-relative mb-4">
-                <lte-apex-chart [options]="visitorsOptions" />
+                <lte-chart type="line" [data]="visitors()" [options]="visitorsOptions()" [plugins]="visitorsPlugins" [height]="200" label="Online store visitors, this week and last week" />
               </div>
               <div class="d-flex flex-row justify-content-end">
                 <span class="me-2"><i class="bi bi-square-fill text-primary"></i> This Week</span>
@@ -114,7 +144,7 @@ import { AppContentComponent, ApexChartComponent } from '@adminlte/angular';
                 </p>
               </div>
               <div class="position-relative mb-4">
-                <lte-apex-chart [options]="salesOptions" />
+                <lte-chart type="bar" [data]="sales()" [options]="salesOptions" [height]="200" label="Sales by month" />
               </div>
               <div class="d-flex flex-row justify-content-end">
                 <span class="me-2"><i class="bi bi-square-fill text-primary"></i> This year</span>
@@ -170,39 +200,56 @@ export class Dashboard3Page {
     { theme: 'danger', icon: 'bi-people', trendIcon: 'bi-graph-down-arrow', value: '1%', label: 'REGISTRATION RATE' },
   ];
 
-  /** Visitors line chart — identical to `visitors_chart_options` in index3.html. */
-  readonly visitorsOptions: Record<string, unknown> = {
-    series: [
-      { name: 'High - 2023', data: [100, 120, 170, 167, 180, 177, 160] },
-      { name: 'Low - 2023', data: [60, 80, 70, 67, 80, 77, 100] },
-    ],
-    chart: { height: 200, type: 'line', toolbar: { show: false } },
-    colors: ['#0d6efd', '#adb5bd'],
-    stroke: { curve: 'smooth' },
-    grid: {
-      borderColor: '#e7e7e7',
-      row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.5 },
-    },
-    legend: { show: false },
-    markers: { size: 1 },
-    xaxis: { categories: ['22th', '23th', '24th', '25th', '26th', '27th', '28th'] },
-  };
+  private readonly theme = inject(ChartThemeService);
 
-  /** Sales bar chart — identical to `sales_chart_options` in index3.html. */
-  readonly salesOptions: Record<string, unknown> = {
-    series: [
-      { name: 'Net Profit', data: [44, 55, 57, 56, 61, 58, 63, 60, 66] },
-      { name: 'Revenue', data: [76, 85, 101, 98, 87, 105, 91, 114, 94] },
-      { name: 'Free Cash Flow', data: [35, 41, 36, 26, 45, 48, 52, 53, 41] },
-    ],
-    chart: { type: 'bar', height: 200 },
-    plotOptions: { bar: { horizontal: false, columnWidth: '55%', endingShape: 'rounded' } },
-    legend: { show: false },
-    colors: ['#0d6efd', '#20c997', '#ffc107'],
-    dataLabels: { enabled: false },
-    stroke: { show: true, width: 2, colors: ['transparent'] },
-    xaxis: { categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'] },
-    fill: { opacity: 1 },
-    tooltip: { y: { formatter: (val: number) => '$ ' + val + ' thousands' } },
+  /** Visitors line chart — `visitors_chart_options` in index3.html. */
+  readonly visitors = computed<ChartData<'line'>>(() => {
+    const p = this.theme.palette();
+    const series = (label: string, data: number[], color: string) => ({
+      label,
+      data,
+      borderColor: color,
+      backgroundColor: color,
+      fill: false,
+      pointRadius: 3,
+      pointBackgroundColor: p.surface,
+      pointBorderColor: color,
+      pointBorderWidth: 2,
+    });
+    return {
+      labels: ['22th', '23th', '24th', '25th', '26th', '27th', '28th'],
+      datasets: [
+        series('High - 2023', [100, 120, 170, 167, 180, 177, 160], p.colors.primary),
+        series('Low - 2023', [60, 80, 70, 67, 80, 77, 100], p.colors.gray),
+      ],
+    };
+  });
+
+  readonly visitorsPlugins = [stripedRows];
+  readonly visitorsOptions = computed<ChartOptions<'line'>>(() => ({
+    plugins: { legend: { display: false }, stripedRows: { color: this.theme.palette().surfaceAlt } },
+    scales: { y: { suggestedMin: 50, suggestedMax: 200 } },
+  }));
+
+  /** Sales bar chart — `sales_chart_options` in index3.html. */
+  readonly sales = computed<ChartData<'bar'>>(() => {
+    const c = this.theme.palette().colors;
+    return {
+      labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+      datasets: [
+        { label: 'Net Profit', data: [44, 55, 57, 56, 61, 58, 63, 60, 66], backgroundColor: c.primary },
+        { label: 'Revenue', data: [76, 85, 101, 98, 87, 105, 91, 114, 94], backgroundColor: c.teal },
+        { label: 'Free Cash Flow', data: [35, 41, 36, 26, 45, 48, 52, 53, 41], backgroundColor: c.warning },
+      ],
+    };
+  });
+
+  readonly salesOptions: ChartOptions<'bar'> = {
+    datasets: { bar: { categoryPercentage: 0.6, barPercentage: 0.85 } },
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: (item) => `${item.dataset.label}: $ ${item.parsed.y} thousands` } },
+    },
+    scales: { y: { beginAtZero: true } },
   };
 }

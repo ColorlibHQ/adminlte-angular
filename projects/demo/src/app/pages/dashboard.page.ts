@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, afterNextRender } from '@angular/core';
-import { AppContentComponent, SmallBoxComponent, ApexChartComponent } from '@adminlte/angular';
+import { ChangeDetectionStrategy, Component, afterNextRender, computed, inject } from '@angular/core';
+import type { ChartData } from 'chart.js';
+import { AppContentComponent, SmallBoxComponent, ChartComponent, ChartThemeService, withAlpha } from '@adminlte/angular';
+import { salesAreaChart, sparklineOptions } from '../chart-presets';
 
 /**
  * Dashboard — a 1:1 replica of the core AdminLTE 4 index page: four small-boxes,
@@ -9,7 +11,7 @@ import { AppContentComponent, SmallBoxComponent, ApexChartComponent } from '@adm
 @Component({
   selector: 'app-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AppContentComponent, SmallBoxComponent, ApexChartComponent],
+  imports: [AppContentComponent, SmallBoxComponent, ChartComponent],
   template: `
     <lte-app-content title="Dashboard" [breadcrumbs]="[{ label: 'Home', route: '/' }, { label: 'Dashboard' }]">
       <!-- Small boxes -->
@@ -27,7 +29,7 @@ import { AppContentComponent, SmallBoxComponent, ApexChartComponent } from '@adm
           <div class="card mb-4">
             <div class="card-header"><h3 class="card-title">Sales Value</h3></div>
             <div class="card-body">
-              <lte-apex-chart [options]="salesOptions" />
+              <lte-chart type="line" [data]="sales().data" [options]="sales().options" [height]="300" label="Sales value, January to July 2023" />
             </div>
           </div>
 
@@ -79,9 +81,9 @@ import { AppContentComponent, SmallBoxComponent, ApexChartComponent } from '@adm
             </div>
             <div class="card-footer border-0">
               <div class="row">
-                <div class="col-4 text-center"><lte-apex-chart [options]="spark1" /><div class="text-white">Visitors</div></div>
-                <div class="col-4 text-center"><lte-apex-chart [options]="spark2" /><div class="text-white">Online</div></div>
-                <div class="col-4 text-center"><lte-apex-chart [options]="spark3" /><div class="text-white">Sales</div></div>
+                <div class="col-4 text-center"><lte-chart type="line" [data]="spark1" [options]="sparkOptions" [height]="50" label="Visitors trend" /><div class="text-white">Visitors</div></div>
+                <div class="col-4 text-center"><lte-chart type="line" [data]="spark2" [options]="sparkOptions" [height]="50" label="Online trend" /><div class="text-white">Online</div></div>
+                <div class="col-4 text-center"><lte-chart type="line" [data]="spark3" [options]="sparkOptions" [height]="50" label="Sales trend" /><div class="text-white">Sales</div></div>
               </div>
             </div>
           </div>
@@ -100,23 +102,13 @@ export class DashboardPage {
     { end: true, name: 'Sarah Bullock', time: '23 Jan 6:10 pm', img: this.avatar, text: 'I would love to.' },
   ];
 
-  readonly salesOptions: Record<string, unknown> = {
-    series: [
-      { name: 'Digital Goods', data: [28, 48, 40, 19, 86, 27, 90] },
-      { name: 'Electronics', data: [65, 59, 80, 81, 56, 55, 40] },
-    ],
-    chart: { height: 300, type: 'area', toolbar: { show: false } },
-    legend: { show: false },
-    colors: ['#0d6efd', '#20c997'],
-    dataLabels: { enabled: false },
-    stroke: { curve: 'smooth' },
-    xaxis: {
-      type: 'datetime',
-      categories: ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01', '2023-05-01', '2023-06-01', '2023-07-01'],
-    },
-    tooltip: { x: { format: 'MMMM yyyy' } },
-  };
+  private readonly theme = inject(ChartThemeService);
 
+  /** Sales Value area chart — `sales_chart_options` from the core index.html. */
+  readonly sales = computed(() => salesAreaChart(this.theme.palette()));
+
+  /** Footer sparklines on the primary card (light stroke, 30% fill, y from 0). */
+  readonly sparkOptions = sparklineOptions(0);
   readonly spark1 = this.sparkline([1000, 1200, 920, 927, 931, 1027, 819, 930, 1021]);
   readonly spark2 = this.sparkline([515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921]);
   readonly spark3 = this.sparkline([15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21]);
@@ -137,14 +129,12 @@ export class DashboardPage {
     });
   }
 
-  private sparkline(data: number[]): Record<string, unknown> {
+  private sparkline(data: number[]): ChartData<'line'> {
+    // Fixed light stroke: it sits on the primary-coloured card in both colour modes.
+    const color = 'rgb(220, 230, 236)';
     return {
-      series: [{ data }],
-      chart: { type: 'area', height: 50, sparkline: { enabled: true } },
-      stroke: { curve: 'straight' },
-      fill: { opacity: 0.3 },
-      yaxis: { min: 0 },
-      colors: ['#DCE6EC'],
+      labels: data.map((_, i) => i + 1),
+      datasets: [{ data, borderColor: color, backgroundColor: withAlpha(color, 0.3), fill: 'origin' }],
     };
   }
 }

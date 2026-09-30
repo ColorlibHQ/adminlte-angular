@@ -12,7 +12,8 @@
     "bootstrap5",
     "signals",
     "standalone-components",
-    "dark-mode"
+    "dark-mode",
+    "chartjs"
   ],
   "homepage": "https://github.com/ColorlibHQ/adminlte-angular",
   "bugs": {
@@ -39,17 +40,17 @@
     "@angular/forms": "^22.0.0",
     "@angular/router": "^22.0.0",
     "admin-lte": "^4.8.3",
-    "apexcharts": "^4.0.0 || ^5.0.0 || ^6.0.0",
     "bootstrap": "^5.3.8",
+    "chart.js": "^4.5.0",
     "flatpickr": "^4.6.0",
     "simple-datatables": "^9.0.0 || ^10.0.0",
     "tom-select": "^2.0.0"
   },
   "peerDependenciesMeta": {
-    "apexcharts": {
+    "bootstrap": {
       "optional": true
     },
-    "bootstrap": {
+    "chart.js": {
       "optional": true
     },
     "flatpickr": {

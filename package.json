@@ -1,7 +1,7 @@
 {
   "name": "adminlte-angular-workspace",
   "version": "0.3.0",
-  "description": "Official AdminLTE 4 port for Angular 22 \u2014 a signal-first standalone component library.",
+  "description": "Official AdminLTE 4 port for Angular 22 — a signal-first standalone component library.",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -42,7 +42,7 @@
     "@angular/compiler-cli": "^22.1.2",
     "@types/sortablejs": "^1.15.9",
     "admin-lte": "^4.8.3",
-    "apexcharts": "^6.10.0",
+    "chart.js": "^4.5.1",
     "flatpickr": "^4.6.13",
     "ng-packagr": "^22.1.1",
     "simple-datatables": "^10.3.0",

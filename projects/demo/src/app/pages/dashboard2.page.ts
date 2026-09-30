@@ -1,18 +1,20 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AppContentComponent, InfoBoxComponent, ApexChartComponent } from '@adminlte/angular';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import type { ChartData, ChartOptions } from 'chart.js';
+import { AppContentComponent, InfoBoxComponent, ChartComponent, ChartThemeService } from '@adminlte/angular';
+import { salesAreaChart, sparklineOptions } from '../chart-presets';
 
 /**
  * Dashboard v2 — 1:1 replica of the core AdminLTE 4 `index2.html`: four info
  * boxes, a Monthly Recap Report (sales area chart + goal-completion progress
  * groups), a Direct Chat card, a Latest Members grid, a Latest Orders table with
  * inline sparklines, four solid info boxes, a Browser Usage donut, and a
- * Recently Added Products list. Charts use `<lte-apex-chart>` with the exact
- * ApexCharts option objects from the core page's `<script>` block.
+ * Recently Added Products list. Charts use `<lte-chart>` (Chart.js) with the
+ * data, colours and chart types of the core page's `<script>` block.
  */
 @Component({
   selector: 'app-dashboard2',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AppContentComponent, InfoBoxComponent, ApexChartComponent],
+  imports: [AppContentComponent, InfoBoxComponent, ChartComponent],
   template: `
     <lte-app-content
       title="Dashboard v2"
@@ -66,7 +68,7 @@ import { AppContentComponent, InfoBoxComponent, ApexChartComponent } from '@admi
               <div class="row">
                 <div class="col-md-8">
                   <p class="text-center"><strong>Sales: 1 Jan, 2023 - 30 Jul, 2023</strong></p>
-                  <lte-apex-chart [options]="salesOptions" />
+                  <lte-chart type="line" [data]="sales().data" [options]="sales().options" [height]="180" label="Sales, January to July 2023" />
                 </div>
                 <div class="col-md-4">
                   <div class="progress-group">
@@ -262,14 +264,14 @@ import { AppContentComponent, InfoBoxComponent, ApexChartComponent } from '@admi
                     </tr>
                   </thead>
                   <tbody>
-                    @for (o of orders; track $index) {
+                    @for (o of orders; track $index; let i = $index) {
                       <tr>
                         <td>
                           <a href="#" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">{{ o.id }}</a>
                         </td>
                         <td>{{ o.item }}</td>
                         <td><span [class]="'badge text-bg-' + o.statusTheme">{{ o.status }}</span></td>
-                        <td><lte-apex-chart [options]="tableSparkline(o.spark)" /></td>
+                        <td><lte-chart type="line" [data]="orderSparklines()[i]" [options]="sparkOptions" [width]="150" [height]="30" [label]="'Popularity of ' + o.item" /></td>
                       </tr>
                     }
                   </tbody>
@@ -307,7 +309,7 @@ import { AppContentComponent, InfoBoxComponent, ApexChartComponent } from '@admi
             <div class="card-body">
               <div class="row">
                 <div class="col-12">
-                  <lte-apex-chart [options]="pieOptions" />
+                  <lte-chart type="doughnut" [data]="browserUsage()" [options]="browserUsageOptions" [height]="260" label="Browser usage" />
                 </div>
               </div>
             </div>
@@ -424,46 +426,39 @@ export class Dashboard2Page {
     { name: 'PlayStation 4', price: '$399', priceTheme: 'success', desc: 'PlayStation 4 500GB Console (PS4)' },
   ];
 
-  /** Monthly Sales area chart — identical to `sales_chart_options` in index2.html. */
-  readonly salesOptions: Record<string, unknown> = {
-    series: [
-      { name: 'Digital Goods', data: [28, 48, 40, 19, 86, 27, 90] },
-      { name: 'Electronics', data: [65, 59, 80, 81, 56, 55, 40] },
-    ],
-    chart: { height: 180, type: 'area', toolbar: { show: false } },
-    legend: { show: false },
-    colors: ['#0d6efd', '#20c997'],
-    dataLabels: { enabled: false },
-    stroke: { curve: 'smooth' },
-    xaxis: {
-      type: 'datetime',
-      categories: ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01', '2023-05-01', '2023-06-01', '2023-07-01'],
-    },
-    tooltip: { x: { format: 'MMMM yyyy' } },
-  };
+  private readonly theme = inject(ChartThemeService);
 
-  /** Browser Usage donut — identical to `pie_chart_options` in index2.html. */
-  readonly pieOptions: Record<string, unknown> = {
-    series: [700, 500, 400, 600, 300, 100],
-    chart: { type: 'donut', height: 350 },
-    labels: ['Chrome', 'Edge', 'FireFox', 'Safari', 'Opera', 'IE'],
-    dataLabels: { enabled: false },
-    colors: ['#0d6efd', '#20c997', '#ffc107', '#d63384', '#6f42c1', '#adb5bd'],
-  };
+  /** Monthly Sales area chart — `sales_chart_options` in index2.html. */
+  readonly sales = computed(() => salesAreaChart(this.theme.palette()));
 
-  /** Inline table sparkline — identical to `createSparklineChart` in index2.html. */
-  tableSparkline(data: number[]): Record<string, unknown> {
+  /** Browser Usage donut — `pie_chart_options` in index2.html. */
+  readonly browserUsage = computed<ChartData<'doughnut'>>(() => {
+    const c = this.theme.palette().colors;
     return {
-      series: [{ data }],
-      chart: { type: 'line', width: 150, height: 30, sparkline: { enabled: true } },
-      colors: ['var(--bs-primary)'],
-      stroke: { width: 2 },
-      tooltip: {
-        fixed: { enabled: false },
-        x: { show: false },
-        y: { title: { formatter: () => '' } },
-        marker: { show: false },
-      },
+      labels: ['Chrome', 'Edge', 'FireFox', 'Safari', 'Opera', 'IE'],
+      datasets: [
+        {
+          label: 'Browser Usage',
+          data: [700, 500, 400, 600, 300, 100],
+          backgroundColor: [c.primary, c.teal, c.warning, c.pink, c.purple, c.gray],
+        },
+      ],
     };
-  }
+  });
+
+  readonly browserUsageOptions: ChartOptions<'doughnut'> = {
+    cutout: '62%',
+    layout: { padding: 6 },
+    plugins: { legend: { position: 'right' } },
+  };
+
+  /** Inline table sparklines — `createSparklineChart` in index2.html. */
+  readonly sparkOptions = sparklineOptions();
+  readonly orderSparklines = computed<ChartData<'line'>[]>(() => {
+    const color = this.theme.palette().colors.primary;
+    return this.orders.map((o) => ({
+      labels: o.spark.map((_, i) => i + 1),
+      datasets: [{ data: o.spark, borderColor: color, fill: false }],
+    }));
+  });
 }

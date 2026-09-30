@@ -12,6 +12,15 @@ export * from './lib/services';
 export { cn, biClass } from './lib/util/class-name';
 export { flattenMenuToCommands } from './lib/util/flatten-menu';
 
+// Charts (Chart.js theme preset)
+export {
+  applyChartDefaults,
+  verticalGradient,
+  withAlpha,
+  type ChartPalette,
+  type ChartThemeColor,
+} from './lib/chart/chart-theme';
+
 // Layout
 export { DashboardLayoutComponent } from './lib/layout/dashboard-layout.component';
 export { AuthLayoutComponent } from './lib/layout/auth-layout.component';
@@ -38,7 +47,7 @@ export { ProfileCardComponent } from './lib/widget/profile-card.component';
 export { DescriptionBlockComponent } from './lib/widget/description-block.component';
 export { BreadcrumbComponent } from './lib/widget/breadcrumb.component';
 export { CommandPaletteComponent } from './lib/widget/command-palette.component';
-export { ApexChartComponent } from './lib/widget/apex-chart.component';
+export { ChartComponent } from './lib/widget/chart.component';
 export { ModalComponent } from './lib/widget/modal.component';
 export { ProgressGroupComponent } from './lib/widget/progress-group.component';
 export { RatingsComponent } from './lib/widget/ratings.component';
