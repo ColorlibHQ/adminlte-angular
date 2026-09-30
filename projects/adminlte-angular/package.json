@@ -1,6 +1,6 @@
 {
   "name": "@adminlte/angular",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Official AdminLTE 4 port for Angular 22 \u2014 signal-first standalone components, dark mode, config-driven sidebar, and a \u2318K command palette on Bootstrap 5.3.",
   "keywords": [
     "adminlte",

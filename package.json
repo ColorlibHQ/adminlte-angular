@@ -1,6 +1,6 @@
 {
   "name": "adminlte-angular-workspace",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Official AdminLTE 4 port for Angular 22 — a signal-first standalone component library.",
   "private": true,
   "license": "MIT",

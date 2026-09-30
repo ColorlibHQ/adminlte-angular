@@ -6,6 +6,8 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-01
+
 Charts move from ApexCharts to **Chart.js 4.5 (MIT)**. From 5.2.0 ApexCharts ships under the
 proprietary "ApexCharts License", which does not suit an MIT library that other people build
 products on, so the wrapper is replaced rather than kept alongside.
