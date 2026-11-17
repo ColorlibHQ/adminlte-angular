@@ -62,8 +62,8 @@ interface LineItem {
             </div>
           </div>
 
-          <div class="text-end mt-3">
-            <button type="button" class="btn btn-outline-secondary me-2"><i class="bi bi-printer me-1"></i>Print</button>
+          <div class="text-end mt-3 d-print-none">
+            <button type="button" class="btn btn-outline-secondary me-2" (click)="print()"><i class="bi bi-printer me-1"></i>Print</button>
             <button type="button" class="btn btn-success"><i class="bi bi-credit-card me-1"></i>Submit Payment</button>
           </div>
         </div>
@@ -72,6 +72,10 @@ interface LineItem {
   `,
 })
 export class InvoicePage {
+  print(): void {
+    window.print();
+  }
+
   readonly items: LineItem[] = [
     { qty: 1, product: 'Pro subscription', description: 'Annual plan — 20 seats', subtotal: '$180.00' },
     { qty: 2, product: 'Extra storage', description: '10 GB add-on', subtotal: '$40.00' },
