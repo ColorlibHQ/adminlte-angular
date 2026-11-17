@@ -2,3 +2,13 @@
 .app-content {
   padding-top: 1rem;
 }
+
+/* Phones: let wide tables scroll inside their card and let the FullCalendar toolbar wrap
+   instead of widening the page. */
+.datatable-container {
+  overflow-x: auto;
+}
+.fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
