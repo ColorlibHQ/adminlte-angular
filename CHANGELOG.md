@@ -6,6 +6,25 @@ All notable changes to `@adminlte/angular` are documented here. The format is ba
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-17
+
+Dependency refresh onto AdminLTE 4.10.2 and Bootstrap 5.3.9.
+
+### Changed
+
+- Built on **admin-lte 4.10.2** (Bootstrap 5.3.9 compiled in). The shipped `css/adminlte.css` now
+  includes the 4.9/4.10 print defaults (the app shell no longer prints; `data-lte-print`),
+  `data-lte-contrast`, `data-lte-primary` and the corrected mini-sidebar logo. The `admin-lte` peer
+  range is `^4.10.2`.
+- Angular 22.2, Chart.js 4.6, Tom Select 2.7, FullCalendar 6.1.22, Bootstrap 5.3.9 and Bootstrap
+  Icons 1.13.2 in the workspace. FullCalendar stays on 6.x (7 is a rewrite without separate
+  plugin packages) and TypeScript on 6.0.x (Angular 22's compiler-cli peer is `<6.1`).
+
+### Fixed
+
+- Demo: the invoice **Print** button now calls `window.print()` and its action row is hidden on paper.
+- Demo: no horizontal page overflow at 390px on `/components` (data table) and `/calendar` (toolbar).
+
 ## [0.4.0] - 2026-10-01
 
 Charts move from ApexCharts to **Chart.js 4.5 (MIT)**. From 5.2.0 ApexCharts ships under the
